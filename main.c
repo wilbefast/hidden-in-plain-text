@@ -59,11 +59,9 @@ int main()
     /* React based on input state */
     int kx, ky;
     input_get(&kx, &ky, &stop);
-    avatar.dx = kx;
-    avatar.dy = ky;
 
     /* Update the game world */
-    update_avatar(&avatar);
+    update_avatar(&avatar, kx, ky);
 
     /* Redraw the screen */
     caca_refresh_display(d);

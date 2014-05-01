@@ -3,9 +3,8 @@
 
 #include <caca.h>
 
-#define GRID_W 160
-#define GRID_H 50
-
+#include "avatar.h"
+#include "grid.h"
 
 int main()
 {
@@ -13,27 +12,15 @@ int main()
   caca_display_t *d = caca_create_display(NULL);
   caca_canvas_t *c = caca_get_canvas(d);
 
+  /* Get size */
+  int w = caca_get_canvas_width(c), h = caca_get_canvas_height(c);
+
   /* Set palette */
   caca_set_color_ansi(c, CACA_WHITE, CACA_BLACK);
 
-  /* Create the grid */
-  int grid[GRID_W][GRID_H];
-  for(int x = 0; x < GRID_W; x++)
-  {
-    /* Set all to 0 */
-    for(int y = 0; y < GRID_H; y++)
-      grid[x][y] = 0;
-
-    /* Top and bottom walls */
-    grid[x][0] = 1;
-    grid[x][GRID_H - 1] = 1;
-  }
-  for(int y = 0; y < GRID_H; y++)
-  {
-   grid[0][y] = 1;
-   grid[GRID_W - 1][y] = 1;
-  }
-
+  /* Create grid */
+  grid_t grid;
+  create_grid(&grid, w, h);
 
   /* Main loop */
   int stop = 0;
@@ -43,14 +30,7 @@ int main()
     caca_clear_canvas(c);
 
     /* Draw the grid */
-    for(int x = 0; x < GRID_W; x++)
-    {
-      for(int y = 0; y < GRID_H; y++)
-      {
-        if(grid[x][y])
-          caca_put_char(c, x, y, '@');
-      }
-    }  
+    draw_grid(&grid, c);
 
     /* Catch events */
     if(caca_get_event(d, CACA_EVENT_KEY_PRESS, NULL, 1000*1000))

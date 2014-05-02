@@ -60,15 +60,18 @@ int main()
   int w = caca_get_canvas_width(c), h = caca_get_canvas_height(c);
 
   // Set palette
-  double bg_rgb[3], fg_rgb[3], bg_hsl[3] = { 0.0, 0.5, 0.5 }, fg_hsl[3] = { 0.5, 0.5, 0.5 };
+  double fg_rgb[3], bg_rgb[3], fg_hsl[3] = { 0.0, 1.0, 0.65 }, bg_hsl[3] = { 0.5, 1.0, 0.0 };
 
   // Create grid
   grid_t grid;
   create_grid(&grid, w, h);
 
   // Create avatar
-  avatar_t avatar;
-  create_avatar(&avatar, WORLD_W/2, WORLD_H/2);
+  avatar_t avatars[2];
+  double x = rand_double(), y = rand_double();
+  create_avatar(&avatars[0], x*WORLD_W, y*WORLD_H);
+  x = clamp(x + 0.5, 0.0, 1.0), y = clamp(y + 0.5, 0.0, 1.0);
+  create_avatar(&avatars[1], x*WORLD_W, y*WORLD_H);
 
   // Start timer
   struct timeval last_tick;
@@ -84,7 +87,8 @@ int main()
   while(!stop)
   {
     // Draw the avatar
-    draw_avatar(&avatar, c);
+    draw_avatar(&avatars[0], c);
+    draw_avatar(&avatars[1], c);
 
     // Wait for events
     caca_event_t event;
@@ -99,8 +103,8 @@ int main()
     }
 
     // React based on input state
-    int kx, ky;
-    input_get(&kx, &ky, &stop);
+    int kx1, ky1, kx2, ky2;
+    input_get(&kx1, &ky1, &kx2, &ky2, &stop);
 
     // Calculate delta time
     struct timeval this_tick;
@@ -109,30 +113,26 @@ int main()
     last_tick = this_tick;
 
     // Update the game world
-    update_avatar(&avatar, dt, kx, ky);
+    update_avatar(&avatars[0], dt, kx1, ky1);
+    update_avatar(&avatars[1], dt, kx2, ky2);
 
     // Flush the rendered characters to the screen
     caca_refresh_display(d);
 
-    // Lap hue around
+    // Lap hue around   
     fg_hsl[0] = lap(fg_hsl[0] + 0.1*dt, 0.0, 1.0);
     hsl_to_rgb(fg_hsl, fg_rgb);
     bg_hsl[0] = lap(fg_hsl[0] + 0.5, 0.0, 1.0);
     hsl_to_rgb(bg_hsl, bg_rgb);
     caca_set_color_argb(c, caca_colour(fg_rgb), caca_colour(bg_rgb));
-
-    // Render characters in their new colour
-    for(int x = 0; x < w; x++)
-      for(int y = 0; y < h; y++)
-        caca_put_char(c, x, y, caca_get_char(c, x, y));
   }
 
   // Clean up
   destroy_grid(&grid);
-  destroy_avatar(&avatar);
+  destroy_avatar(&avatars[0]);
+  destroy_avatar(&avatars[1]);
   caca_free_display(d);
 
-  
   // All done
   return EXIT_SUCCESS;
 }

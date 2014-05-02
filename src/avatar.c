@@ -3,6 +3,7 @@
 #include <math.h>
 
 #include "global.h"
+#include "useful.h"
 
 void create_avatar(avatar_t *a, float x, float y)
 {
@@ -41,20 +42,24 @@ void update_avatar(avatar_t *a, double dt, int input_x, int input_y)
   a->y += a->dy*dt;
 
   // Lap around
-  if(a->x > WORLD_W) a->x -= WORLD_W;
-  if(a->x < 0) a->x += WORLD_W;
-  if(a->y > WORLD_H) a->y -= WORLD_H;
-  if(a->y < 0) a->y += WORLD_H;
+  a->x = lap(a->x, 0.0, WORLD_W);
+  a->y = lap(a->y, 0.0, WORLD_H);
 }
 
 static float w = -1, h = -1;
 
 void draw_avatar(avatar_t *a, caca_canvas_t *c)
 {
+  // Translate into screen space
   if(w < 0) w = caca_get_canvas_width(c) / WORLD_W;
   if(h < 0) h = caca_get_canvas_height(c) / WORLD_H;
-
   int x = a->x*w, y = a->y*h;
 
-  caca_put_char(c, x, y, '@');
+  // Swap characters
+  double angle = rand_between(0.0, TWOPI);
+  double distance = 16*(1 + rand_double());
+  int swap_x = lap(x + cos(angle)*distance*w, 0.0, WORLD_W);
+  int swap_y = lap(y + sin(angle)*distance*h, 0.0, WORLD_H);
+  
+  caca_put_char(c, swap_x, swap_y, '@');
 }

@@ -2,7 +2,8 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include <limits.h>
+
+#include "useful.h"
 
 typedef struct vector_t
 {
@@ -32,14 +33,9 @@ vector_t vsub(vector_t a, vector_t b)
   return vector(a.x - b.x, a.y - b.y) ;
 }
 
-static double random_between(double min, double max)
-{
-  return min + (rand() / (double)INT_MAX)*(max - min);
-}
-
 static vector_t _gradient(vector_t position)
 {
-  return vector(random_between(-1.0, 1.0), random_between(-1.0, 1.0));
+  return vector(rand_between(-1.0, 1.0), rand_between(-1.0, 1.0));
 }
 
 static inline double _interpolate(double a, double b, double amount)

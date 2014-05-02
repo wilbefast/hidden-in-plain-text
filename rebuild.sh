@@ -1,3 +1,3 @@
 #! /bin/bash
 
-gcc -Wall -std=c99 -o out *.c -l caca -l m
+gcc -Wall -std=c99 -o out  src/*.c -l caca -l m

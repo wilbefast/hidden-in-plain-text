@@ -1,3 +1,3 @@
 #! /bin/bash
 
-gcc -Wall -std=c99 -o out main.c avatar.c grid.c input.c -l caca -l m
+gcc -Wall -std=c99 -o out *.c -l caca -l m

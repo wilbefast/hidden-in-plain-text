@@ -8,6 +8,7 @@
 #include "avatar.h"
 #include "grid.h"
 #include "input.h"
+#include "perlin.h"
 
 #define FRAMES_PER_SECOND 60
 #define MICROSECONDS_TO_SECONDS(us) ((us)*0.000001)
@@ -37,13 +38,17 @@ int main()
   struct timeval last_tick;
   gettimeofday(&last_tick, NULL);  
 
+  /* Generate background */
+  for(int x = 0; x < w; x++)
+    for(int y = 0; y < h; y++)
+      caca_put_char(c, x, y, '0'+ 9*perlin_noise(x/(double)w, y/(double)h)); 
+
   /* Main loop */
-  bool stop = false;
- 	
+  bool stop = false;	
   while(!stop)
   {
     /* Clear the canvas */
-    caca_clear_canvas(c);
+    //caca_clear_canvas(c);
 
     /* Draw the grid */
     draw_grid(&grid, c);

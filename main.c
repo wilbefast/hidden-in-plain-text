@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <sys/time.h>
 
 #include <caca.h>
 
@@ -9,6 +10,7 @@
 #include "input.h"
 
 #define FRAMES_PER_SECOND 60
+#define MICROSECONDS_TO_SECONDS(us) ((us)*0.000001)
 #define MICROSECONDS_PER_FRAME 1000000/60
 
 int main()
@@ -31,8 +33,13 @@ int main()
   avatar_t avatar;
   create_avatar(&avatar, w*0.5f, h*0.5f);
 
+  /* Start timer */
+  struct timeval last_tick;
+  gettimeofday(&last_tick, NULL);  
+
   /* Main loop */
   bool stop = false;
+ 	
   while(!stop)
   {
     /* Clear the canvas */
@@ -44,7 +51,7 @@ int main()
     /* Draw the avatar */
     draw_avatar(&avatar, c);
 
-    /* Catch events */
+    /* Wait for events */
     caca_event_t event;
     if(caca_get_event(d, CACA_EVENT_ANY, &event, MICROSECONDS_PER_FRAME))
     {
@@ -60,14 +67,24 @@ int main()
     int kx, ky;
     input_get(&kx, &ky, &stop);
 
+    /* Calculate delta time */
+    struct timeval this_tick;
+    gettimeofday(&this_tick, NULL);    
+    double dt = MAX(0.0, MICROSECONDS_TO_SECONDS(this_tick.tv_usec - last_tick.tv_usec));
+    last_tick = this_tick;
+
     /* Update the game world */
-    update_avatar(&avatar, kx, ky);
+    update_avatar(&avatar, dt, kx, ky);
 
     /* Redraw the screen */
     caca_refresh_display(d);
   }
 
   /* Clean up */
+  destroy_grid(&grid);
+  destroy_avatar(&avatar);
   caca_free_display(d);
+  
+  /* All done */
   return EXIT_SUCCESS;
 }

@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <time.h>
 #include <sys/time.h>
+#include <string.h>
 
 #include <caca.h>
 
@@ -9,6 +11,7 @@
 #include "grid.h"
 #include "input.h"
 #include "perlin.h"
+#include "global.h"
 
 #define FRAMES_PER_SECOND 60
 #define MICROSECONDS_TO_SECONDS(us) ((us)*0.000001)
@@ -26,50 +29,44 @@ char get_char(double darkness)
 
 int main()
 {
-  /* Seed random */
+  // Seed random
   srand(time(0));
 
-  /* Start CACA */
+  // Start CACA
   caca_display_t *d = caca_create_display(NULL);
   caca_canvas_t *c = caca_get_canvas(d);
 
-  /* Get size */
+  // Get size
   int w = caca_get_canvas_width(c), h = caca_get_canvas_height(c);
 
-  /* Set palette */
-  caca_set_color_ansi(c, CACA_GREEN, CACA_BLACK);
+  // Set palette
+  caca_set_color_ansi(c, CACA_WHITE, CACA_BLACK);
 
-  /* Create grid */
+  // Create grid
   grid_t grid;
   create_grid(&grid, w, h);
 
-  /* Create avatar */
+  // Create avatar
   avatar_t avatar;
-  create_avatar(&avatar, 0.0f, 0.0f);
+  create_avatar(&avatar, WORLD_W/2, WORLD_H/2);
 
-  /* Start timer */
+  // Start timer
   struct timeval last_tick;
   gettimeofday(&last_tick, NULL);  
 
-  /* Generate background */
+  // Generate background
   for(int x = 0; x < w; x++)
     for(int y = 0; y < h; y++)
       caca_put_char(c, x, y, get_char(0.5 + perlin_noise(x/(double)w, y/(double)h))); 
 
-  /* Main loop */
+  // Main loop
   bool stop = false;	
   while(!stop)
   {
-    /* Clear the canvas */
-    //caca_clear_canvas(c);
-
-    /* Draw the grid */
-    //draw_grid(&grid, c);
-
-    /* Draw the avatar */
+    // Draw the avatar
     draw_avatar(&avatar, c);
 
-    /* Wait for events */
+    // Wait for events
     caca_event_t event;
     if(caca_get_event(d, CACA_EVENT_ANY, &event, MICROSECONDS_PER_FRAME))
     {
@@ -81,28 +78,28 @@ int main()
       }
     }
 
-    /* React based on input state */
+    // React based on input state
     int kx, ky;
     input_get(&kx, &ky, &stop);
 
-    /* Calculate delta time */
+    // Calculate delta time
     struct timeval this_tick;
     gettimeofday(&this_tick, NULL);    
     double dt = MAX(0.0, MICROSECONDS_TO_SECONDS(this_tick.tv_usec - last_tick.tv_usec));
     last_tick = this_tick;
 
-    /* Update the game world */
+    // Update the game world
     update_avatar(&avatar, dt, kx, ky);
 
-    /* Redraw the screen */
+    // Redraw the screen
     caca_refresh_display(d);
   }
 
-  /* Clean up */
+  // Clean up
   destroy_grid(&grid);
   destroy_avatar(&avatar);
   caca_free_display(d);
   
-  /* All done */
+  // All done
   return EXIT_SUCCESS;
 }

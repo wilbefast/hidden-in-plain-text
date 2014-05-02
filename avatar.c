@@ -47,5 +47,6 @@ void update_avatar(avatar_t *a, double dt, int input_x, int input_y)
 
 void draw_avatar(avatar_t *a, caca_canvas_t *c)
 {
-  caca_put_char(c, floorf(a->x), floorf((a->y)*0.4f), '@');
+  int w = caca_get_canvas_width(c), h = caca_get_canvas_height(c);
+  caca_put_char(c, floorf(w*0.5f + a->x), floorf(h*0.5f + (a->y)*0.4f), '@');
 }

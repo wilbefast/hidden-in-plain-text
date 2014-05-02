@@ -14,8 +14,21 @@
 #define MICROSECONDS_TO_SECONDS(us) ((us)*0.000001)
 #define MICROSECONDS_PER_FRAME 1000000/60
 
+static int palette_size = -1;
+static char *palette = " .'`^,:;Il!i<>~+_-?[]{}1()|/\tfjrxnuvczXYUJCLQO0Zmwqpdbkhao*#MW&8%B@$";
+
+char get_char(double darkness)
+{
+  if(palette_size < 0)
+    palette_size = strlen(palette);
+  return palette[(int)(palette_size*darkness)];
+}
+
 int main()
 {
+  /* Seed random */
+  srand(time(0));
+
   /* Start CACA */
   caca_display_t *d = caca_create_display(NULL);
   caca_canvas_t *c = caca_get_canvas(d);
@@ -24,7 +37,7 @@ int main()
   int w = caca_get_canvas_width(c), h = caca_get_canvas_height(c);
 
   /* Set palette */
-  caca_set_color_ansi(c, CACA_WHITE, CACA_BLACK);
+  caca_set_color_ansi(c, CACA_GREEN, CACA_BLACK);
 
   /* Create grid */
   grid_t grid;
@@ -32,7 +45,7 @@ int main()
 
   /* Create avatar */
   avatar_t avatar;
-  create_avatar(&avatar, w*0.5f, h*0.5f);
+  create_avatar(&avatar, 0.0f, 0.0f);
 
   /* Start timer */
   struct timeval last_tick;
@@ -41,7 +54,7 @@ int main()
   /* Generate background */
   for(int x = 0; x < w; x++)
     for(int y = 0; y < h; y++)
-      caca_put_char(c, x, y, '0'+ 9*perlin_noise(x/(double)w, y/(double)h)); 
+      caca_put_char(c, x, y, get_char(0.5 + perlin_noise(x/(double)w, y/(double)h))); 
 
   /* Main loop */
   bool stop = false;	
@@ -51,7 +64,7 @@ int main()
     //caca_clear_canvas(c);
 
     /* Draw the grid */
-    draw_grid(&grid, c);
+    //draw_grid(&grid, c);
 
     /* Draw the avatar */
     draw_avatar(&avatar, c);

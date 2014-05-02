@@ -1,12 +1,45 @@
 #include "perlin.h"
 
+#include <stdlib.h>
 #include <math.h>
+#include <limits.h>
 
-static inline double _noise(int x, int y)
+typedef struct vector_t
 {
-  int n = x + y*57;
-  n = (n << 13) ^ n;
-  return (double)((1 - (x*(x*x*15731 + 789221) + 1376312589)) & 0x7fffffff) / 1073741824.0;
+  double x, y;
+} vector_t;
+
+vector_t vector(double x, double y)
+{
+  vector_t result;
+  result.x = x;
+  result.y = y;
+  return result;
+}
+
+double dot(vector_t a, vector_t b)
+{
+  return a.x*b.y - a.y*b.y;
+}
+
+vector_t vadd(vector_t a, vector_t b)
+{
+  return vector(a.x + b.x, a.y + b.y) ;
+}
+
+vector_t vsub(vector_t a, vector_t b)
+{
+  return vector(a.x - b.x, a.y - b.y) ;
+}
+
+static double random_between(double min, double max)
+{
+  return min + (rand() / (double)INT_MAX)*(max - min);
+}
+
+static vector_t _gradient(vector_t position)
+{
+  return vector(random_between(-1.0, 1.0), random_between(-1.0, 1.0));
 }
 
 static inline double _interpolate(double a, double b, double amount)
@@ -17,15 +50,23 @@ static inline double _interpolate(double a, double b, double amount)
 
 double perlin_noise(double x, double y)
 {
+  vector_t target = vector(x, y);
+
   int ix = (int)x, iy = (int)y;
 
-  double top_l = _noise(ix, iy),
-         top_r = _noise(ix + 1, iy),
-         bottom_l = _noise(ix, iy + 1),
-         bottom_r = _noise(ix + 1, iy + 1);
+  vector_t corner[4] = 
+  {
+    vector(ix, iy),
+    vector(ix + 1, iy),
+    vector(ix, iy + 1),
+    vector(ix + 1, iy + 1)
+  };
 
-  double top = _interpolate(top_l, top_r, x - ix);
-  double bottom = _interpolate(bottom_l, bottom_r, x - ix);
+  double influence[4];
+  for(int i = 0; i < 4; i++)
+    influence[i] = dot(_gradient(corner[i]), vsub(target, corner[i]));
 
+  double top = _interpolate(influence[0], influence[1], x - ix);
+  double bottom = _interpolate(influence[2], influence[3], x - ix);
   return _interpolate(top, bottom, y - iy);
 }

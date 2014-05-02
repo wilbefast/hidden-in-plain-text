@@ -10,10 +10,12 @@
 #define AVATAR_FRICTION 0.9f
 #define AVATAR_FRICTION_X 0.99f
 #define AVATAR_FRICTION_Y 0.99f
+#define AVATAR_GLITCH_RADIUS 196.0
+#define AVATAR_GLITCH_RADIUS_MOVING 0.2
 
 typedef struct
 {
-  float x, y, dx, dy;
+  float x, y, dx, dy, speed;
 } avatar_t;
 
 void create_avatar(avatar_t*, float x, float y);

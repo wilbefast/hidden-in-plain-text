@@ -3,7 +3,12 @@
 #include <caca.h>
 
 static bool _up = false, _down = false, _left = false, _right = false, 
-            _action = false, _quit = false;
+            _action = false, _quit = false, _quit_prev = false;
+
+void input_reset()
+{
+  _up = _down = _left = _right = _action = _quit = _quit_prev = false;
+}
 
 void input_set(int key, bool pressed)
 {
@@ -15,8 +20,7 @@ void input_set(int key, bool pressed)
     case CACA_KEY_RIGHT: _right = pressed; break;
     
     case CACA_KEY_RETURN: case ' ': _action = pressed; break;
-    
-    case CACA_KEY_ESCAPE: _quit = pressed; break;
+    case CACA_KEY_ESCAPE: _quit_prev = _quit; _quit = pressed; break;
 
     default: break;
   }
@@ -44,4 +48,9 @@ bool input_action()
 bool input_quit()
 {
   return _quit;
+}
+
+bool input_quit_trigger()
+{
+  return (_quit && !_quit_prev);
 }

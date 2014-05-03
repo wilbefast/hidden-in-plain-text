@@ -8,3 +8,6 @@ extern int canvas_w;
 extern int canvas_h;
 extern double world_to_canvas_x;
 extern double world_to_canvas_y;
+
+extern float hide_position[2];
+extern float seek_position[2];

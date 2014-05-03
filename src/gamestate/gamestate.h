@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdbool.h>
+
 #include <caca.h>
 
 struct gamestate_t;
@@ -16,3 +18,4 @@ typedef struct gamestate_t
 void gamestate_switch(gamestate_t *new_state);
 void gamestate_update(double dt);
 void gamestate_draw(caca_canvas_t *c);
+bool gamestate_is(gamestate_t *state);

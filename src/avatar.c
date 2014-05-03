@@ -67,10 +67,16 @@ void update_avatar(avatar_t *a, double dt, int input_x, int input_y)
 
 }
 
-void draw_avatar(avatar_t *a, caca_canvas_t *c)
+static void _canvas_xy(avatar_t *a, int *x, int *y)
+{
+  (*x) = a->x*world_to_canvas_x;
+  (*y) = a->y*world_to_canvas_y;
+}
+
+void draw_avatar_hide(avatar_t *a, caca_canvas_t *c)
 {
   // Convert into canvas space
-  int x = a->x*world_to_canvas_x, y = a->y*world_to_canvas_y;
+  int x, y; _canvas_xy(a, &x, &y);
 
   // Set palette
   caca_set_color_argb(c, caca_colour(a->rgb), 0b1111000000000000);
@@ -90,4 +96,22 @@ void draw_avatar(avatar_t *a, caca_canvas_t *c)
   char b_char = caca_get_char(c, b_x, b_y);
   caca_put_char(c, a_x, a_y, b_char);
   caca_put_char(c, b_x, b_y, a_char);
+}
+
+void draw_avatar_seek(avatar_t *a, caca_canvas_t *c)
+{
+  // Convert into canvas space
+  int x, y; _canvas_xy(a, &x, &y);
+
+  // Set palette
+  //caca_set_color_argb(c, 0b1111000000000000, caca_colour(a->rgb));
+  caca_set_color_argb(c, caca_colour(a->rgb), 0b1111000000000000);
+
+  // Create characters
+  double angle = rand_between(0.0, TWOPI);
+  double ndistance = rand_double();
+  double distance = 12.0 * (1 + ndistance);
+  x = lap(x + cos(angle)*distance*world_to_canvas_x, 0.0, canvas_w);
+  y = lap(y + sin(angle)*distance*world_to_canvas_y, 0.0, canvas_h);   
+  caca_put_char(c, x, y, get_char(ndistance));  
 }

@@ -22,4 +22,5 @@ typedef struct
 void create_avatar(avatar_t*, float x, float y);
 void destroy_avatar(avatar_t*);
 void update_avatar(avatar_t*, double dt, int input_x, int input_y);
-void draw_avatar(avatar_t*, caca_canvas_t*);
+void draw_avatar_hide(avatar_t*, caca_canvas_t*);
+void draw_avatar_seek(avatar_t*, caca_canvas_t*);

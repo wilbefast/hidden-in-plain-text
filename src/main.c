@@ -14,6 +14,7 @@
 #include "gamestate/title.h"
 #include "gamestate/hide.h"
 #include "gamestate/seek.h"
+#include "gamestate/score.h"
 
 int main()
 {
@@ -38,6 +39,7 @@ int main()
   title_init();
   hide_init();
   seek_init();
+  score_init();
 
   // Enter starting gamestate
   gamestate_switch(&title);
@@ -59,7 +61,8 @@ int main()
     }
 
     // Check for quit requests
-    stop = input_quit();
+    if(gamestate_is(&title) && input_quit())
+      stop = true;
 
     // Calculate delta time
     struct timeval this_tick;

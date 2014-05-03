@@ -17,6 +17,8 @@
 #include "../glitch.h"
 
 #include "gamestate.h"
+#include "score.h"
+#include "title.h" 
 
 //
 // Constants
@@ -40,6 +42,8 @@ typedef enum
 
 static double t;
 
+static avatar_t avatar;
+
 static _substate_t state;
 
 //
@@ -51,19 +55,28 @@ static void _enter(gamestate_t *this, gamestate_t *previous)
   // Reset timer
   t = 0.0;
 
+  // Initialise avatar attributes
+  create_avatar(&avatar, WORLD_W*0.5, WORLD_H*0.5);
+
   // Reset state
   state = CLEAN;
 }
 
 static void _leave(gamestate_t *this, gamestate_t *next)
 {
+  // Save seek position
+  seek_position[0] = avatar.x;
+  seek_position[1] = avatar.y;
+
+  // Free memory allocated by avatar
+  destroy_avatar(&avatar);
 }
 
 static void _draw(gamestate_t *this, caca_canvas_t *c)
 {
   if(state == CLEAN)
   {
-     unglitch(c, HIDE_CLEANS_PER_FRAME);
+     unglitch(c, SEEK_CLEANS_PER_FRAME);
   }
   if(state == TUTORIAL)
   {
@@ -71,6 +84,7 @@ static void _draw(gamestate_t *this, caca_canvas_t *c)
   }
   else if(state == GAMEPLAY)
   {
+    draw_avatar_seek(&avatar, c);
   }
 }
 
@@ -80,9 +94,9 @@ static void _update(gamestate_t *this, double dt)
   t += dt;
 
   // Refresh state
-  if(t < HIDE_CLEAN_TIME)
+  if(t < SEEK_CLEAN_TIME)
     state = CLEAN;
-  else if(t < HIDE_CLEAN_TIME + HIDE_TUTORIAL_TIME)
+  else if(t < SEEK_CLEAN_TIME + SEEK_TUTORIAL_TIME)
     state = TUTORIAL;
   else
    state = GAMEPLAY;
@@ -92,7 +106,18 @@ static void _update(gamestate_t *this, double dt)
   {
     // Read input state
     int kx, ky; input_xy(&kx, &ky);
+
+    // Update the avatar
+    update_avatar(&avatar, dt, kx, ky);
+
+    // Has the seeker bet on a position ?
+    if(input_action())
+      gamestate_switch(&score);
   }
+
+  // Return to title
+  if(input_quit())
+    gamestate_switch(&title);
 }
 
 

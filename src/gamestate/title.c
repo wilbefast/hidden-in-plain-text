@@ -25,11 +25,14 @@ static int name_length = 0;
 static char *author = "@wilbefast";
 static int author_length = 0;
 
+static double t = 0.0;
+
 // Methods
 
 static void _enter(gamestate_t *this, gamestate_t *previous)
 {
-  // nothing here so far ...
+  // Reset timer
+  t = 0.0;
 }
 
 static void _leave(gamestate_t *this, gamestate_t *next)
@@ -39,6 +42,10 @@ static void _leave(gamestate_t *this, gamestate_t *next)
 
 static void _draw(gamestate_t *this, caca_canvas_t *c)
 {
+  // Clean up
+  if(t < 1.0)
+    unglitch(c, 700);
+
   // Erase central area
   double angle = rand_between(0.0, TWOPI);
   double radius = rand_between(0.0, 0.5);
@@ -80,6 +87,9 @@ static void _update(gamestate_t *this, double dt)
   // Read input state
   if(input_action())
     gamestate_switch(&hide);
+
+  // Update counter
+  t += dt;
 }
 
 //

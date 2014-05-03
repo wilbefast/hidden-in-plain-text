@@ -19,6 +19,9 @@
 #include "gamestate.h"
 #include "seek.h"
 
+// can't include "title.h" as this would create a loop
+extern gamestate_t title; 
+
 //
 // Constants
 // 
@@ -63,6 +66,10 @@ static void _enter(gamestate_t *this, gamestate_t *previous)
 
 static void _leave(gamestate_t *this, gamestate_t *next)
 {
+  // Save hide position
+  hide_position[0] = avatar.x;
+  hide_position[1] = avatar.y;
+
   // Destroy avatar
   destroy_avatar(&avatar);
 }
@@ -80,7 +87,7 @@ static void _draw(gamestate_t *this, caca_canvas_t *c)
   else if(state == GAMEPLAY)
   {
     // Draw the avatar
-    draw_avatar(&avatar, c);
+    draw_avatar_hide(&avatar, c);
   }
 
   // Reset colour
@@ -114,6 +121,10 @@ static void _update(gamestate_t *this, double dt)
     if(input_action())
       gamestate_switch(&seek);
   }
+
+  // Return to menu ?
+  if(input_quit())
+    gamestate_switch(&title);
 }
 
 

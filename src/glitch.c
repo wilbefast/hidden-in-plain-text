@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <math.h>
 
 #include <caca.h>
 
@@ -88,6 +89,15 @@ void glitch_str(caca_canvas_t *c, char *str, int x, int y, int n_letters)
   }
 }
 
+void glitch_str_flicker(caca_canvas_t *c, char *str, int x, int y, double flicker_amount)
+{
+  int n = strlen(str);
+
+  int j = rand()%n;
+  int cx = (int)lap(x - n/2 + j, 0.0, canvas_w);
+  caca_put_char(c, cx, y, (rand_double() > flicker_amount) ? str[j] : ' ');
+}
+
 
 // Erase text
 
@@ -95,4 +105,33 @@ void unglitch(caca_canvas_t *c, int amount)
 {
   for(int i = 0; i < amount; i++)
     caca_put_char(c, rand()%canvas_w, rand()%canvas_h, ' ');
+}
+
+
+// Localised glitch
+
+/*
+void glitch_swap_near(caca_canvas_t *c, int x, int y, double radius)
+{ 
+  double a_angle = rand_between(0.0, TWOPI);
+  double b_angle = a_angle + PI;
+  int a_x = lap(x + cos(a_angle)*radius*world_to_canvas_x, 0.0, canvas_w);
+  int a_y = lap(y + sin(a_angle)*radius*world_to_canvas_y, 0.0, canvas_h);
+  int b_x = lap(x + cos(b_angle)*radius*world_to_canvas_x, 0.0, canvas_w);
+  int b_y = lap(y + sin(b_angle)*radius*world_to_canvas_y, 0.0, canvas_h);
+   
+  char a_char = caca_get_char(c, a_x, a_y);
+  char b_char = caca_get_char(c, b_x, b_y);
+  caca_put_char(c, a_x, a_y, b_char);
+  caca_put_char(c, b_x, b_y, a_char);
+}
+*/
+
+void glitch_near(caca_canvas_t *c, int x, int y, double max_radius)
+{
+  double radius = rand_double();
+  double angle = rand_between(0.0, TWOPI);
+  x = lap(x + cos(angle)*max_radius*(1 + radius)*world_to_canvas_x, 0.0, canvas_w);
+  y = lap(y + sin(angle)*max_radius*(1 + radius)*world_to_canvas_y, 0.0, canvas_h);
+  caca_put_char(c, x, y, get_char(radius));  
 }

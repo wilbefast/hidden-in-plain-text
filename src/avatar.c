@@ -23,7 +23,7 @@ void create_avatar(avatar_t *a, float x, float y)
 
 void destroy_avatar(avatar_t *a)
 {
-
+  // nothing here so far ...
 }
 
 void update_avatar(avatar_t *a, double dt, int input_x, int input_y)

@@ -13,39 +13,8 @@
 #include "perlin.h"
 #include "global.h"
 #include "useful.h"
-
-#define FRAMES_PER_SECOND 60
-#define MICROSECONDS_TO_SECONDS(us) ((us)*0.000001)
-#define MICROSECONDS_PER_FRAME 1000000/60
-
-static int palette_size = -1;
-static char *palette = " .'`^,:;Il!i<>~+_-?[]{}1()|/\tfjrxnuvczXYUJCLQO0Zmwqpdbkhao*#MW&8%B@$";
-
-void print_binary(uint16_t data)
-{
-  char string[17];
-  uint16_t checker = 0b1000000000000000;
-  for(int i = 0; i < 16; i++, checker = (checker >> 1))
-    string[i] = (data & checker) ? '1' : '0';
-  string[16] = '\0';
-  printf("%s\n", string);
-}
-
-char get_char(double darkness)
-{
-  if(palette_size < 0)
-    palette_size = strlen(palette);
-  return palette[(int)(palette_size*darkness)];
-}
-
-uint16_t caca_colour(double rgb[3])
-{
-  uint16_t a = 0b1111000000000000;
-  uint16_t r = ((uint16_t)(15.0*rgb[0])) << 8;
-  uint16_t g = ((uint16_t)(15.0*rgb[1])) << 4;
-  uint16_t b = ((uint16_t)(15.0*rgb[0]));
-  return (a | r | g | b);
-}
+#include "gamestate.h"
+#include "colour.h"
 
 int main()
 {
@@ -67,11 +36,8 @@ int main()
   create_grid(&grid, w, h);
 
   // Create avatar
-  avatar_t avatars[2];
-  double x = rand_double(), y = rand_double();
-  create_avatar(&avatars[0], x*WORLD_W, y*WORLD_H);
-  x = clamp(x + 0.5, 0.0, 1.0), y = clamp(y + 0.5, 0.0, 1.0);
-  create_avatar(&avatars[1], x*WORLD_W, y*WORLD_H);
+  avatar_t avatar;
+  create_avatar(&avatar, 0.5*WORLD_W, 0.5*WORLD_H);
 
   // Start timer
   struct timeval last_tick;
@@ -87,8 +53,7 @@ int main()
   while(!stop)
   {
     // Draw the avatar
-    draw_avatar(&avatars[0], c);
-    draw_avatar(&avatars[1], c);
+    draw_avatar(&avatar, c);
 
     // Wait for events
     caca_event_t event;
@@ -103,8 +68,9 @@ int main()
     }
 
     // React based on input state
-    int kx1, ky1, kx2, ky2;
-    input_get(&kx1, &ky1, &kx2, &ky2, &stop);
+    int kx, ky;
+    bool action;
+    input_get(&kx, &ky, &action, &stop);
 
     // Calculate delta time
     struct timeval this_tick;
@@ -113,8 +79,7 @@ int main()
     last_tick = this_tick;
 
     // Update the game world
-    update_avatar(&avatars[0], dt, kx1, ky1);
-    update_avatar(&avatars[1], dt, kx2, ky2);
+    update_avatar(&avatar, dt, kx, ky);
 
     // Flush the rendered characters to the screen
     caca_refresh_display(d);
@@ -129,8 +94,7 @@ int main()
 
   // Clean up
   destroy_grid(&grid);
-  destroy_avatar(&avatars[0]);
-  destroy_avatar(&avatars[1]);
+  destroy_avatar(&avatar);
   caca_free_display(d);
 
   // All done

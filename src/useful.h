@@ -4,6 +4,8 @@
 #define MAX(x, y) ((x) > (y) ? (x) : (y))
 #define PI 3.141592653589793
 #define TWOPI (2*PI)
+#define MICROSECONDS_TO_SECONDS(us) ((us)*0.000001)
+#define MICROSECONDS_PER_FRAME 1000000/60
 
 // Random
 double rand_between(double min, double max);

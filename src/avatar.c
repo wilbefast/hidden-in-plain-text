@@ -4,7 +4,7 @@
 
 #include "global.h"
 #include "useful.h"
-#include "colour.h"
+#include "glitch.h"
 
 void create_avatar(avatar_t *a, float x, float y)
 {
@@ -58,8 +58,9 @@ void update_avatar(avatar_t *a, double dt, int input_x, int input_y)
   // Cycle hue
   a->hsl[0] = lap(a->hsl[0] + 0.1*dt, 0.0, 1.0);
 
-  // Saturation reflects speed
-  a->hsl[1] = a->speed/AVATAR_MAXSPEED;
+  // Brightness and saturation reflect speed
+  a->hsl[1] = 0.5*(2.0 - a->speed/AVATAR_MAXSPEED);
+  a->hsl[2] = 0.5*(2.0 - a->speed/AVATAR_MAXSPEED);
 
   // Recalculate RGB
   hsl_to_rgb(a->hsl, a->rgb);

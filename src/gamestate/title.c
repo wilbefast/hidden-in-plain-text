@@ -11,10 +11,10 @@
 #include "../perlin.h"
 #include "../global.h"
 #include "../useful.h"
-#include "../colour.h"
+#include "../glitch.h"
 
 #include "gamestate.h"
-
+#include "hide.h"
 
 //
 // Attributes
@@ -29,7 +29,7 @@ static int author_length = 0;
 
 static void _enter(gamestate_t *this, gamestate_t *previous)
 {
-  
+  // nothing here so far ...
 }
 
 static void _leave(gamestate_t *this, gamestate_t *next)
@@ -63,7 +63,7 @@ static void _draw(gamestate_t *this, caca_canvas_t *c)
   // Place the character
   x = canvas_w*0.5 + canvas_w*radius*cos(angle);
   y = canvas_h*0.5 + canvas_h*radius*sin(angle);
-  caca_put_char(c, x, y, get_char(0.5 + perlin_noise(x/(double)canvas_w, y/(double)canvas_h)));
+  caca_put_char(c, x, y, get_char(radius));
 
   // Reset colour
   caca_set_color_ansi(c, CACA_WHITE, CACA_BLACK);
@@ -72,7 +72,8 @@ static void _draw(gamestate_t *this, caca_canvas_t *c)
 static void _update(gamestate_t *this, double dt)
 {
   // Read input state
-  int kx, ky; input_xy(&kx, &ky);
+  if(input_action())
+    gamestate_switch(&hide);
 }
 
 //

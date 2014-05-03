@@ -1,3 +1,3 @@
 #! /bin/bash
 
-less /usr/include/caca.h
+nano /usr/include/caca.h

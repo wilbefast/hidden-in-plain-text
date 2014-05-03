@@ -1,4 +1,4 @@
-#include "hide.h"
+#include "seek.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,13 +17,12 @@
 #include "../glitch.h"
 
 #include "gamestate.h"
-#include "seek.h"
 
 //
 // Constants
 // 
 
-static char *tutorial = "Hide!";
+static char *tutorial = "Seek!";
 
 //
 // Nesting
@@ -31,15 +30,13 @@ static char *tutorial = "Hide!";
 
 typedef enum
 {
-  TUTORIAL, GLITCH, GAMEPLAY
+  CLEAN, TUTORIAL, GAMEPLAY
 } _substate_t;
 
 
 //
 // Attributes
 //
-
-static avatar_t avatar;
 
 static double t;
 
@@ -51,41 +48,30 @@ static _substate_t state;
 
 static void _enter(gamestate_t *this, gamestate_t *previous)
 {
-  // Create avatar
-  create_avatar(&avatar, 0.5*WORLD_W, 0.5*WORLD_H);
-
   // Reset timer
   t = 0.0;
 
   // Reset state
-  state = TUTORIAL;
+  state = CLEAN;
 }
 
 static void _leave(gamestate_t *this, gamestate_t *next)
 {
-  // Destroy avatar
-  destroy_avatar(&avatar);
 }
 
 static void _draw(gamestate_t *this, caca_canvas_t *c)
 {
+  if(state == CLEAN)
+  {
+     unglitch(c, HIDE_CLEANS_PER_FRAME);
+  }
   if(state == TUTORIAL)
   {
     glitch_str(c, tutorial, rand()%canvas_w, rand()%canvas_h, 10);
   }
-  else if(state == GLITCH)
-  {
-    glitch(c, HIDE_GLITCHES_PER_FRAME);
-  }
   else if(state == GAMEPLAY)
   {
-    // Draw the avatar
-    draw_avatar(&avatar, c);
   }
-
-  // Reset colour
-  caca_set_color_ansi(c, CACA_WHITE, CACA_BLACK);
-
 }
 
 static void _update(gamestate_t *this, double dt)
@@ -94,10 +80,10 @@ static void _update(gamestate_t *this, double dt)
   t += dt;
 
   // Refresh state
-  if(t < HIDE_TUTORIAL_TIME)
+  if(t < HIDE_CLEAN_TIME)
+    state = CLEAN;
+  else if(t < HIDE_CLEAN_TIME + HIDE_TUTORIAL_TIME)
     state = TUTORIAL;
-  else if(t < HIDE_TUTORIAL_TIME + HIDE_GLITCH_TIME)
-    state = GLITCH;
   else
    state = GAMEPLAY;
 
@@ -106,13 +92,6 @@ static void _update(gamestate_t *this, double dt)
   {
     // Read input state
     int kx, ky; input_xy(&kx, &ky);
-
-    // Update the avatar
-    update_avatar(&avatar, dt, kx, ky);
-
-    // Switch to seek's turn ?
-    if(input_action())
-      gamestate_switch(&seek);
   }
 }
 
@@ -121,12 +100,12 @@ static void _update(gamestate_t *this, double dt)
 // Global variable
 //
 
-gamestate_t hide;
+gamestate_t seek;
 
-void hide_init()
+void seek_init()
 {
-  hide.enter = _enter;
-  hide.leave = _leave;
-  hide.draw = _draw;
-  hide.update = _update;
+  seek.enter = _enter;
+  seek.leave = _leave;
+  seek.draw = _draw;
+  seek.update = _update;
 }

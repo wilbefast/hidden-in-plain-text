@@ -13,6 +13,7 @@
 #include "gamestate/gamestate.h"
 #include "gamestate/title.h"
 #include "gamestate/hide.h"
+#include "gamestate/seek.h"
 
 int main()
 {
@@ -36,6 +37,7 @@ int main()
   // Initialise gamestates
   title_init();
   hide_init();
+  seek_init();
 
   // Enter starting gamestate
   gamestate_switch(&title);

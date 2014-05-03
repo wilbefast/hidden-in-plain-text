@@ -87,3 +87,12 @@ void glitch_str(caca_canvas_t *c, char *str, int x, int y, int n_letters)
     caca_put_char(c, cx, y, str[j]);
   }
 }
+
+
+// Erase text
+
+void unglitch(caca_canvas_t *c, int amount)
+{
+  for(int i = 0; i < amount; i++)
+    caca_put_char(c, rand()%canvas_w, rand()%canvas_h, ' ');
+}

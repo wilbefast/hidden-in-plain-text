@@ -65,7 +65,7 @@ static void _draw(gamestate_t *this, caca_canvas_t *c)
     int x, y;
 
     // Draw hiding player position
-    caca_set_color_ansi(c, CACA_CYAN, CACA_BLACK);
+    caca_set_color_ansi(c, CACA_LIGHTCYAN, CACA_BLACK);
     x = world_to_canvas_x*hide_position[0];
     y = world_to_canvas_y*hide_position[1];
     glitch_near(c, x, y, 12.0);

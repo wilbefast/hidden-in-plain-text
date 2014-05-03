@@ -78,6 +78,7 @@ static void _draw(gamestate_t *this, caca_canvas_t *c)
 {
   if(state == TUTORIAL)
   {
+    caca_set_color_ansi(c, CACA_LIGHTCYAN, CACA_BLACK);
     glitch_str(c, tutorial, rand()%canvas_w, rand()%canvas_h, 10);
   }
   else if(state == GLITCH)

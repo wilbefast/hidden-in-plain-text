@@ -63,7 +63,7 @@ void update_avatar(avatar_t *a, double dt, int input_x, int input_y)
   a->hsl[2] = 0.5*(2.0 - a->speed/AVATAR_MAXSPEED);
 
   // Recalculate RGB
-  hsl_to_rgb(a->hsl, a->rgb);
+  //hsl_to_rgb(a->hsl, a->rgb);
 
 }
 
@@ -79,8 +79,11 @@ void draw_avatar_hide(avatar_t *a, caca_canvas_t *c)
   int x, y; _canvas_xy(a, &x, &y);
 
   // Set palette
-  caca_set_color_argb(c, caca_colour(a->rgb), 0b1111000000000000);
-  
+  //a->hsl[0] = 0.7;
+  //hsl_to_rgb(a->hsl, a->rgb);
+  //caca_set_color_argb(c, caca_colour(a->rgb), 0b1111000000000000);
+  caca_set_color_ansi(c, CACA_LIGHTCYAN, CACA_BLACK);  
+
   // Swap characters
   double a_angle = rand_between(0.0, TWOPI);
   double b_angle = a_angle + PI;
@@ -104,8 +107,10 @@ void draw_avatar_seek(avatar_t *a, caca_canvas_t *c)
   int x, y; _canvas_xy(a, &x, &y);
 
   // Set palette
-  //caca_set_color_argb(c, 0b1111000000000000, caca_colour(a->rgb));
-  caca_set_color_argb(c, caca_colour(a->rgb), 0b1111000000000000);
+  //a->hsl[0] = 0.6;
+  //hsl_to_rgb(a->hsl, a->rgb);
+  //caca_set_color_argb(c, caca_colour(a->rgb), 0b1111000000000000);
+  caca_set_color_ansi(c, CACA_YELLOW, CACA_BLACK);  
 
   // Create characters
   double angle = rand_between(0.0, TWOPI);

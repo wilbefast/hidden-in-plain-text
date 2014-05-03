@@ -39,21 +39,27 @@ static void _leave(gamestate_t *this, gamestate_t *next)
 
 static void _draw(gamestate_t *this, caca_canvas_t *c)
 {
-  // Build/erase title
-  int i = rand()%name_length, 
-      x = (canvas_w - name_length)*0.5, 
-      y = canvas_h*0.4;
-  caca_put_char(c, x + i, y, rand()%6 ? name[i] : ' ');
+  // Erase central area
+  double angle = rand_between(0.0, TWOPI);
+  double radius = rand_between(0.0, 0.5);
+  int x = canvas_w*0.5 + canvas_w*radius*cos(angle);
+  int y = canvas_h*0.5 + canvas_h*radius*cos(angle);
+  caca_put_char(c, x, y, ' ');
+
+  // Build title
+  int i = rand()%name_length;
+  x = (canvas_w - name_length)*0.5;
+  y = canvas_h*0.5;  
+  caca_put_char(c, x + i, y, name[i]);
   
-  // Build/erase author 
+  // Build author 
   i = rand()%author_length;
   x = (canvas_w - author_length)*0.5;
   y = canvas_h*0.6;
-  caca_put_char(c, x + i, y, rand()%6 ? author[i] : ' ');
+  caca_put_char(c, x + i, y, author[i]);
 
   // Pick a character around the outside
-  double angle = rand_between(0.0, TWOPI);
-  double radius = rand_between(0.25, 1.0);
+  radius = rand_between(0.25, 1.0);
   
   // Choose a colour based on this position
   double hsl[3] = { angle / TWOPI, 0.5, 1.0 - radius }, rgb[3];

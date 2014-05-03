@@ -15,4 +15,4 @@ char perlin_char(int x, int y);
 void glitch_xy(caca_canvas_t *c, int x, int y);
 void glitch(caca_canvas_t *c, int amount);
 void glitch_all(caca_canvas_t *c);
-
+void glitch_str(caca_canvas_t *c, char* str, int x, int y, int n_letters);

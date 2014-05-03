@@ -76,3 +76,14 @@ void glitch_all(caca_canvas_t *c)
   }
 }
 
+void glitch_str(caca_canvas_t *c, char *str, int x, int y, int n_letters)
+{
+  int n = strlen(str);
+
+  for(int i = 0; i < n_letters; i++)
+  {
+    int j = rand()%n;
+    int cx = (int)lap(x - n/2 + j, 0.0, canvas_w);
+    caca_put_char(c, cx, y, str[j]);
+  }
+}

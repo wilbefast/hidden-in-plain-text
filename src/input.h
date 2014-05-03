@@ -3,4 +3,6 @@
 #include <stdbool.h>
 
 void input_set(int key, bool pressed);
-void input_get(int *x, int *y, bool *action, bool *escape);
+void input_xy(int *x, int *y);
+bool input_action();
+bool input_quit();

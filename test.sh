@@ -1,3 +1,3 @@
 #! /bin/bash
 
-./rebuild.sh && ./out
+./rebuild.sh && ./HiddenInPlainText

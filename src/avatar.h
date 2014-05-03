@@ -16,6 +16,7 @@
 typedef struct
 {
   float x, y, dx, dy, speed;
+  double hsl[3], rgb[3];
 } avatar_t;
 
 void create_avatar(avatar_t*, float x, float y);

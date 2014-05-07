@@ -1,3 +1,17 @@
+/*
+(C) Copyright 2014 William Dyce
+
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the GNU Lesser General Public License
+(LGPL) version 2.1 which accompanies this distribution, and is available at
+http://www.gnu.org/licenses/lgpl-2.1.html
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+*/
+
 #include "glitch.h"
 
 #include <stdio.h>
@@ -129,9 +143,9 @@ void glitch_swap_near(caca_canvas_t *c, int x, int y, double radius)
 
 void glitch_near(caca_canvas_t *c, int x, int y, double max_radius)
 {
-  double radius = rand_double();
+  double nradius = rand_double();
   double angle = rand_between(0.0, TWOPI);
-  x = lap(x + cos(angle)*max_radius*(1 + radius)*world_to_canvas_x, 0.0, canvas_w);
-  y = lap(y + sin(angle)*max_radius*(1 + radius)*world_to_canvas_y, 0.0, canvas_h);
-  caca_put_char(c, x, y, get_char(radius));  
+  x = lap(x + cos(angle)*max_radius*(1 + nradius)*world_to_canvas_x, 0.0, canvas_w);
+  y = lap(y + sin(angle)*max_radius*(1 + nradius)*world_to_canvas_y, 0.0, canvas_h);
+  caca_put_char(c, x, y, get_char(1 - nradius));  
 }

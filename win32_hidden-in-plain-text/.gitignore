@@ -1,0 +1,7 @@
+Release/
+Debug/
+*.opensdf
+*.sdf
+*.swp
+*~
+*.user

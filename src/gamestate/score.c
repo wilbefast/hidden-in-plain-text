@@ -16,9 +16,6 @@ Lesser General Public License for more details.
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include <time.h>
-#include <sys/time.h>
 #include <string.h>
 
 #include <caca.h>
@@ -32,6 +29,7 @@ Lesser General Public License for more details.
 #include "gamestate.h"
 #include "title.h"
 
+#include "../platform_specific.h"
 
 //
 // Nesting
@@ -55,7 +53,7 @@ static _substate_t state;
 // Methods
 //
 
-static void _enter(gamestate_t *this, gamestate_t *previous)
+static void enter(gamestate_t *this, gamestate_t *previous)
 {
   // Reset timer
   t = 0.0;
@@ -64,11 +62,11 @@ static void _enter(gamestate_t *this, gamestate_t *previous)
   state = CLEAN;
 }
 
-static void _leave(gamestate_t *this, gamestate_t *next)
+static void leave(gamestate_t *this, gamestate_t *next)
 {
 }
 
-static void _draw(gamestate_t *this, caca_canvas_t *c)
+static void draw(gamestate_t *this, caca_canvas_t *c)
 {
   if(state == CLEAN)
   {
@@ -80,22 +78,22 @@ static void _draw(gamestate_t *this, caca_canvas_t *c)
 
     // Draw hiding player position
     caca_set_color_ansi(c, CACA_LIGHTCYAN, CACA_BLACK);
-    x = world_to_canvas_x*hide_position[0];
-    y = world_to_canvas_y*hide_position[1];
+    x = (int)(world_to_canvas_x*hide_position[0]);
+    y = (int)(world_to_canvas_y*hide_position[1]);
     glitch_near(c, x, y, 12.0);
     glitch_str_flicker(c, "Hide", x, (y > canvas_h - 8) ? y - 4 : y + 4, 0.1);
 
     // Draw seeking player position
     caca_set_color_ansi(c, CACA_YELLOW, CACA_BLACK);
-    x = world_to_canvas_x*seek_position[0];
-    y = world_to_canvas_y*seek_position[1];
+    x = (int)(world_to_canvas_x*seek_position[0]);
+    y = (int)(world_to_canvas_y*seek_position[1]);
     glitch_near(c, x, y, 12.0);
     glitch_str_flicker(c, "Seek", x, (y > canvas_h - 8) ? y - 4 : y + 4, 0.1);
 
   }
 }
 
-static void _update(gamestate_t *this, double dt)
+static void update(gamestate_t *this, double dt)
 {
   // Increment timer
   t += dt;
@@ -124,8 +122,8 @@ gamestate_t score;
 
 void score_init()
 {
-  score.enter = _enter;
-  score.leave = _leave;
-  score.draw = _draw;
-  score.update = _update;
+  score.enter = enter;
+  score.leave = leave;
+  score.draw = draw;
+  score.update = update;
 }

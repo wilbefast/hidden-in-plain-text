@@ -18,14 +18,16 @@ Lesser General Public License for more details.
 #include <limits.h>
 #include <stdio.h>
 
+#include "platform_specific.h"
+
 // Random
 
-inline double rand_between(double min, double max)
+double rand_between(double min, double max)
 {
   return min + (rand_double()*(max - min));
 }
 
-inline double rand_double()
+double rand_double()
 {
   return rand() / (double)RAND_MAX;
 }
@@ -33,12 +35,12 @@ inline double rand_double()
 
 // Clamp and lap
 
-inline double clamp(double k, double min, double max)
+double clamp(double k, double min, double max)
 {
   return (k > max) ? max : ((k < min) ? min : k);
 }
 
-inline double lap(double k, double min, double max)
+double lap(double k, double min, double max)
 {
   return (k > max) ? (k - max) : ((k < min) ? (k + (max - min)) : k);
 }

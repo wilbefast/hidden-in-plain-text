@@ -16,9 +16,6 @@ Lesser General Public License for more details.
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include <time.h>
-#include <sys/time.h>
 #include <string.h>
 
 #include <caca.h>
@@ -33,6 +30,8 @@ Lesser General Public License for more details.
 #include "gamestate.h"
 #include "score.h"
 #include "title.h" 
+
+#include "../platform_specific.h"
 
 //
 // Constants
@@ -64,7 +63,7 @@ static _substate_t state;
 // Methods
 //
 
-static void _enter(gamestate_t *this, gamestate_t *previous)
+static void enter(gamestate_t *this, gamestate_t *previous)
 {
   // Reset timer
   t = 0.0;
@@ -76,7 +75,7 @@ static void _enter(gamestate_t *this, gamestate_t *previous)
   state = CLEAN;
 }
 
-static void _leave(gamestate_t *this, gamestate_t *next)
+static void leave(gamestate_t *this, gamestate_t *next)
 {
   // Save seek position
   seek_position[0] = avatar.x;
@@ -86,7 +85,7 @@ static void _leave(gamestate_t *this, gamestate_t *next)
   destroy_avatar(&avatar);
 }
 
-static void _draw(gamestate_t *this, caca_canvas_t *c)
+static void draw(gamestate_t *this, caca_canvas_t *c)
 {
   if(state == CLEAN)
   {
@@ -103,7 +102,7 @@ static void _draw(gamestate_t *this, caca_canvas_t *c)
   }
 }
 
-static void _update(gamestate_t *this, double dt)
+static void update(gamestate_t *this, double dt)
 {
   // Increment timer
   t += dt;
@@ -144,8 +143,8 @@ gamestate_t seek;
 
 void seek_init()
 {
-  seek.enter = _enter;
-  seek.leave = _leave;
-  seek.draw = _draw;
-  seek.update = _update;
+  seek.enter = enter;
+  seek.leave = leave;
+  seek.draw = draw;
+  seek.update = update;
 }

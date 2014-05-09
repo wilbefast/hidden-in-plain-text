@@ -16,9 +16,6 @@ Lesser General Public License for more details.
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include <time.h>
-#include <sys/time.h>
 #include <string.h>
 
 #include <caca.h>
@@ -32,6 +29,8 @@ Lesser General Public License for more details.
 
 #include "gamestate.h"
 #include "seek.h"
+
+#include "../platform_specific.h"
 
 // can't include "title.h" as this would create a loop
 extern gamestate_t title; 
@@ -66,7 +65,7 @@ static _substate_t state;
 // Methods
 //
 
-static void _enter(gamestate_t *this, gamestate_t *previous)
+static void enter(gamestate_t *this, gamestate_t *previous)
 {
   // Create avatar
   create_avatar(&avatar, 0.5*WORLD_W, 0.5*WORLD_H);
@@ -78,7 +77,7 @@ static void _enter(gamestate_t *this, gamestate_t *previous)
   state = TUTORIAL;
 }
 
-static void _leave(gamestate_t *this, gamestate_t *next)
+static void leave(gamestate_t *this, gamestate_t *next)
 {
   // Save hide position
   hide_position[0] = avatar.x;
@@ -88,7 +87,7 @@ static void _leave(gamestate_t *this, gamestate_t *next)
   destroy_avatar(&avatar);
 }
 
-static void _draw(gamestate_t *this, caca_canvas_t *c)
+static void draw(gamestate_t *this, caca_canvas_t *c)
 {
   if(state == TUTORIAL)
   {
@@ -110,7 +109,7 @@ static void _draw(gamestate_t *this, caca_canvas_t *c)
 
 }
 
-static void _update(gamestate_t *this, double dt)
+static void update(gamestate_t *this, double dt)
 {
   // Increment timer
   t += dt;
@@ -151,8 +150,8 @@ gamestate_t hide;
 
 void hide_init()
 {
-  hide.enter = _enter;
-  hide.leave = _leave;
-  hide.draw = _draw;
-  hide.update = _update;
+  hide.enter = enter;
+  hide.leave = leave;
+  hide.draw = draw;
+  hide.update = update;
 }

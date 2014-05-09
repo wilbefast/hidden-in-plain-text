@@ -14,9 +14,7 @@ Lesser General Public License for more details.
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <time.h>
-#include <sys/time.h>
 
 #include <caca.h>
 
@@ -30,14 +28,23 @@ Lesser General Public License for more details.
 #include "gamestate/seek.h"
 #include "gamestate/score.h"
 
+#include "platform_specific.h"
+#include "delta_time.h"
+
 int main()
 {
+	// Local variables
+	caca_display_t *d;
+	caca_canvas_t *c;
+	bool stop;
+	double dt;
+
   // Seed random number generator
-  srand(time(0));
+  srand((unsigned int)time(0));
 
   // Start CACA, ASCII rendering library
-  caca_display_t *d = caca_create_display(NULL);
-  caca_canvas_t *c = caca_get_canvas(d);
+  d = caca_create_display(NULL);
+  c = caca_get_canvas(d);
 
   // Get canvas size, write to global variable
   canvas_w = caca_get_canvas_width(c);
@@ -46,8 +53,7 @@ int main()
   world_to_canvas_y = canvas_h / WORLD_H;
 
   // Start timer
-  struct timeval last_tick;
-  gettimeofday(&last_tick, NULL);  
+  dt_start();
 
   // Initialise gamestates
   title_init();
@@ -59,7 +65,7 @@ int main()
   gamestate_switch(&title);
 
   // Main loop
-  bool stop = false;	
+  stop = false;	
   while(!stop)
   {
     // Wait for events
@@ -79,10 +85,7 @@ int main()
       stop = true;
 
     // Calculate delta time
-    struct timeval this_tick;
-    gettimeofday(&this_tick, NULL);    
-    double dt = MAX(0.0, MICROSECONDS_TO_SECONDS(this_tick.tv_usec - last_tick.tv_usec));
-    last_tick = this_tick;
+    dt = dt_get();
 
     // Update the game world
     gamestate_update(dt);

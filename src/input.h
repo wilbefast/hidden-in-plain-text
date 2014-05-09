@@ -14,7 +14,7 @@ Lesser General Public License for more details.
 
 #pragma once
 
-#include <stdbool.h>
+#include "platform_specific.h"
 
 void input_reset();
 void input_set(int key, bool pressed);

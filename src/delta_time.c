@@ -41,7 +41,7 @@ static double dt;
 	{
 		LARGE_INTEGER this_tick;
 		QueryPerformanceCounter(&this_tick);
-		dt = (this_tick.QuadPart - last_tick.QuadPart) * 1000.0 / frequency.QuadPart;
+		dt = (this_tick.QuadPart - last_tick.QuadPart) / (double)(frequency.QuadPart);
 		last_tick = this_tick;
 
 		return dt;

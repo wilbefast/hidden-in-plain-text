@@ -18,20 +18,24 @@ Lesser General Public License for more details.
 
 void create_grid(grid_t *g, int w, int h)
 {
+	// local variables
+	int x, y;
+	tile_t **tiles;
+
   /* Allocate memory */
-  tile_t **tiles = calloc(w, sizeof(tile_t*));
-  for(int x = 0; x < w; x++)
-  	tiles[x] = calloc(h, sizeof(tile_t));
+  tiles = (tile_t**)calloc(w, sizeof(tile_t*));
+  for(x = 0; x < w; x++)
+  	tiles[x] = (tile_t*)calloc(h, sizeof(tile_t));
 
   /* Top and bottom walls */
-  for(int x = 0; x < w; x++)
+  for(x = 0; x < w; x++)
   {
 	  tiles[x][0] = WALL;
 	  tiles[x][h - 1] = WALL;
 	}
 
   /* Left and right walls */
-  for(int y = 0; y < h; y++)
+  for(y = 0; y < h; y++)
   {
    tiles[0][y] = WALL;
    tiles[w - 1][y] = WALL;
@@ -46,16 +50,18 @@ void create_grid(grid_t *g, int w, int h)
 void destroy_grid(grid_t *g)
 {
   /* Free memory */
-  for(int x = 0; x < g->w; x++)
+	int x;
+  for(x = 0; x < g->w; x++)
     free(g->tiles[x]);
   free(g->tiles);
 }
 
 void draw_grid(grid_t *g, caca_canvas_t *c)
 {
-  for(int x = 0; x < g->w; x++)
+	int x, y;
+  for(x = 0; x < g->w; x++)
   {
-    for(int y = 0; y < g->h; y++)
+    for(y = 0; y < g->h; y++)
     {
       switch(g->tiles[x][y])
       {

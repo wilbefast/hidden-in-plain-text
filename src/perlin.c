@@ -19,6 +19,8 @@ Lesser General Public License for more details.
 
 #include "useful.h"
 
+#include "platform_specific.h"
+
 typedef struct vector_t
 {
   double x, y;
@@ -60,23 +62,24 @@ static inline double _interpolate(double a, double b, double amount)
 
 double perlin_noise(double x, double y)
 {
-  vector_t target = vector(x, y);
+	// local variables 
+  vector_t target, corner[4];
+	int ix, iy, i;
+	double influence[4], top, bottom;
+	
+	target = vector(x, y);
+  ix = (int)x;
+	iy = (int)y;
 
-  int ix = (int)x, iy = (int)y;
+  corner[0] = vector(ix, iy);
+  corner[1] = vector(ix + 1, iy);
+  corner[2] = vector(ix, iy + 1);
+  corner[3] = vector(ix + 1, iy + 1);
 
-  vector_t corner[4] = 
-  {
-    vector(ix, iy),
-    vector(ix + 1, iy),
-    vector(ix, iy + 1),
-    vector(ix + 1, iy + 1)
-  };
-
-  double influence[4];
-  for(int i = 0; i < 4; i++)
+  for(i = 0; i < 4; i++)
     influence[i] = dot(_gradient(corner[i]), vsub(target, corner[i]));
 
-  double top = _interpolate(influence[0], influence[1], x - ix);
-  double bottom = _interpolate(influence[2], influence[3], x - ix);
+  top = _interpolate(influence[0], influence[1], x - ix);
+  bottom = _interpolate(influence[2], influence[3], x - ix);
   return _interpolate(top, bottom, y - iy);
 }

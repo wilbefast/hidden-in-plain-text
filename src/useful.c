@@ -17,6 +17,7 @@ Lesser General Public License for more details.
 #include <stdlib.h>
 #include <limits.h>
 #include <stdio.h>
+#include <math.h>
 
 #include "platform_specific.h"
 
@@ -32,6 +33,15 @@ double rand_double()
   return rand() / (double)RAND_MAX;
 }
 
+// Vector maths
+
+double dist(double x1, double y1, double x2, double y2)
+{
+  double dx, dy;
+  dx = x1 - x2;
+  dy = y1 - y2;
+  return sqrt(SQR(dx) + SQR(dy));
+}
 
 // Clamp and lap
 
@@ -44,6 +54,9 @@ double lap(double k, double min, double max)
 {
   return (k > max) ? (k - max) : ((k < min) ? (k + (max - min)) : k);
 }
+
+
+// Colour
 
 static double _hue_to_rgb(double p, double q, double t)
 {

@@ -16,7 +16,7 @@ Lesser General Public License for more details.
 
 #include "gamestate.h"
 
-#define SCORE_CLEAN_TIME 2.0
+#define SCORE_CLEAN_TIME 1.0
 #define SCORE_CLEANS_PER_FRAME 400
 
 extern gamestate_t score;

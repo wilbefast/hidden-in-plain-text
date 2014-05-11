@@ -25,6 +25,9 @@ Lesser General Public License for more details.
 double rand_between(double min, double max);
 double rand_double();
 
+// Vector maths
+double dist(double x1, double y1, double x2, double y2);
+
 // Clamp and lap
 double clamp(double k, double min, double max);
 double lap(double k, double min, double max);

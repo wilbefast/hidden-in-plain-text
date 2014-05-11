@@ -16,9 +16,9 @@ Lesser General Public License for more details.
 
 #include "gamestate.h"
 
-#define SEEK_CLEAN_TIME 3.0
-#define SEEK_TUTORIAL_TIME 3.0
-#define SEEK_CLEANS_PER_FRAME 300
+#define SEEK_CLEAN_TIME 1.0
+#define SEEK_TUTORIAL_TIME 1.0
+#define SEEK_CLEANS_PER_FRAME 800
 
 extern gamestate_t seek;
 void seek_init();

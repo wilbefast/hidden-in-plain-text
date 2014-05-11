@@ -31,6 +31,14 @@ Lesser General Public License for more details.
 #include "platform_specific.h"
 #include "delta_time.h"
 
+static void reset_display_size(int new_w, int new_h)
+{
+  canvas_w = new_w;
+  canvas_h = new_h;
+  world_to_canvas_x = canvas_w / WORLD_W;
+  world_to_canvas_y = canvas_h / WORLD_H;
+}
+
 int main()
 {
 	// Local variables
@@ -47,11 +55,8 @@ int main()
   c = caca_get_canvas(d);
 
   // Get canvas size, write to global variable
-  canvas_w = caca_get_canvas_width(c);
-  canvas_h = caca_get_canvas_height(c);
-  world_to_canvas_x = canvas_w / WORLD_W;
-  world_to_canvas_y = canvas_h / WORLD_H;
-
+  reset_display_size(caca_get_canvas_width(c), caca_get_canvas_height(c));
+ 
   // Start timer
   dt_start();
 
@@ -75,7 +80,9 @@ int main()
       switch(event.type)
       {
         case CACA_EVENT_KEY_PRESS: input_set(event.data.key.ch, true); break;
-        case CACA_EVENT_KEY_RELEASE: input_set(event.data.key.ch, false); break;          
+        case CACA_EVENT_KEY_RELEASE: input_set(event.data.key.ch, false); break;     
+		    case CACA_EVENT_RESIZE: reset_display_size(event.data.resize.w, event.data.resize.h); break;
+		    case CACA_EVENT_QUIT: stop = true; break;
         default: break;
       }
     }

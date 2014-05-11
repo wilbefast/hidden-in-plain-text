@@ -122,7 +122,7 @@ static void update(gamestate_t *this, double dt)
     int kx, ky; input_xy(&kx, &ky);
 
     // Update the avatar
-    update_avatar(&avatar, dt, kx, ky);
+    update_avatar(&avatar, dt, kx, ky, true); // seek
 
     // Has the seeker bet on a position ?
     if(input_action())

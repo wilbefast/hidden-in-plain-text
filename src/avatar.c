@@ -40,11 +40,15 @@ void destroy_avatar(avatar_t *a)
   // nothing here so far ...
 }
 
-void update_avatar(avatar_t *a, double dt, int input_x, int input_y)
+void update_avatar(avatar_t *a, double dt, int input_x, int input_y, bool seek)
 {
+  // Local variables
+  float acceleration;
+  acceleration = seek ? AVATAR_ACCELERATION_SEEK : AVATAR_ACCELERATION_HIDE;
+
   // Update speed from input
-  a->dx = (float)(a->dx + AVATAR_ACCELERATION*dt*input_x);
-  a->dy = (float)(a->dy + AVATAR_ACCELERATION*dt*input_y);
+  a->dx = (float)(a->dx + acceleration*dt*input_x);
+  a->dy = (float)(a->dy + acceleration*dt*input_y);
 
   // Apply friction per axis
   a->dx = (float)(a->dx * (input_x ? 1.0f : pow(1.0f - AVATAR_FRICTION_X, dt))); 
@@ -90,25 +94,28 @@ static void _canvas_xy(avatar_t *a, int *x, int *y)
 void draw_avatar_hide(avatar_t *a, caca_canvas_t *c)
 {
 	// local variables
-	double a_angle, b_angle, distance;
+	double a_angle, b_angle, distance, nspeed;
 	int a_x, a_y, b_x, b_y;
 	char a_char, b_char;
 
   // Convert into canvas space
   int x, y; _canvas_xy(a, &x, &y);
 
+  // normalised speed of avatar
+  nspeed = (a->speed/AVATAR_MAXSPEED);
+
   // Set palette
   //a->hsl[0] = 0.7;
   //hsl_to_rgb(a->hsl, a->rgb);
   //caca_set_color_argb(c, caca_colour(a->rgb), 0b1111000000000000);
-  caca_set_color_ansi(c, CACA_LIGHTCYAN, CACA_BLACK);  
+  caca_set_color_ansi(c, (nspeed > 0.5) ? CACA_LIGHTCYAN : CACA_WHITE, CACA_BLACK);  
 
   // Swap characters
   a_angle = rand_between(0.0, TWOPI);
   b_angle = a_angle + PI;
-  distance = AVATAR_GLITCH_RADIUS
-                    * (1 + AVATAR_GLITCH_RADIUS_MOVING - a->speed/AVATAR_MAXSPEED)
-                    * (1 + rand_double());
+  distance = canvas_w/world_to_canvas_x //AVATAR_GLITCH_RADIUS*canvas_w
+                    * (AVATAR_GLITCH_RADIUS_MOVING + 1 - nspeed)
+                    * rand_double();
   a_x = (int)lap(x + cos(a_angle)*distance*world_to_canvas_x, 0.0, canvas_w);
   a_y = (int)lap(y + sin(a_angle)*distance*world_to_canvas_y, 0.0, canvas_h);
   b_x = (int)lap(x + cos(b_angle)*distance*world_to_canvas_x, 0.0, canvas_w);

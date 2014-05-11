@@ -18,14 +18,17 @@ Lesser General Public License for more details.
 
 #include "useful.h"
 
+#include "platform_specific.h"
+
 #define AVATAR_MAXSPEED 200.0f
 #define AVATAR_MAXSPEED2 SQR(AVATAR_MAXSPEED)
-#define AVATAR_ACCELERATION 1000.0f
+#define AVATAR_ACCELERATION_HIDE 300.0f
+#define AVATAR_ACCELERATION_SEEK 1000.0f
 #define AVATAR_FRICTION 0.9f
 #define AVATAR_FRICTION_X 0.99f
 #define AVATAR_FRICTION_Y 0.99f
-#define AVATAR_GLITCH_RADIUS 196.0
-#define AVATAR_GLITCH_RADIUS_MOVING 0.1
+#define AVATAR_GLITCH_RADIUS 0.5          // fraction of canvas width
+#define AVATAR_GLITCH_RADIUS_MOVING 0.05   // fraction of base glitch radius
 
 typedef struct
 {
@@ -35,6 +38,6 @@ typedef struct
 
 void create_avatar(avatar_t*, float x, float y);
 void destroy_avatar(avatar_t*);
-void update_avatar(avatar_t*, double dt, int input_x, int input_y);
+void update_avatar(avatar_t*, double dt, int input_x, int input_y, bool seek);
 void draw_avatar_hide(avatar_t*, caca_canvas_t*);
 void draw_avatar_seek(avatar_t*, caca_canvas_t*);

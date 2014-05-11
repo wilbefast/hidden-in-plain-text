@@ -129,7 +129,7 @@ static void update(gamestate_t *this, double dt)
     int kx, ky; input_xy(&kx, &ky);
 
     // Update the avatar
-    update_avatar(&avatar, dt, kx, ky);
+    update_avatar(&avatar, dt, kx, ky, false); // hide
 
     // Switch to seek's turn ?
     if(input_action())
